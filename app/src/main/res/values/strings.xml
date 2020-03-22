@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">TesteBTG</string>
+    <string name="test_btg_films">Filmes</string>
+    <string name="test_btg_favorites">Favoritos</string>
+    <string name="test_btg_gener"><b>Gênero:</b></string>
+    <string name="test_btg_search">Pesquisar</string>
 </resources>
