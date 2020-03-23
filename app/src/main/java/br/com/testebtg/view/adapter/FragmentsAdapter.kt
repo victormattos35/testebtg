@@ -19,7 +19,7 @@ class FragmentsAdapter(
                 FilmsFragment(listFilms)
             }
             1 -> {
-                FavoritesFragment()
+                FavoritesFragment(listFilms)
             }
             else -> FilmsFragment(listFilms)
         }

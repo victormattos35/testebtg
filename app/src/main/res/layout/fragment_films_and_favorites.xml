@@ -5,34 +5,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/etFFilmsSearch"
+    <SearchView
+        android:id="@+id/etFFFilmsSearch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
-        android:hint="@string/test_btg_search"
-        android:inputType="textPersonName"
-        android:singleLine="true"
+        android:background="@drawable/rounded_card"
+        android:iconifiedByDefault="false"
+        android:queryHint="@string/test_btg_search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/my_swipeRefresh_Layout"
+        android:id="@+id/srlFFRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:srl_direction="both">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvFFilms"
-        android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etFFilmsSearch"
-        tools:listitem="@layout/list_films" />
+        app:layout_constraintTop_toBottomOf="@+id/etFFFilmsSearch">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvFFFilms"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scrollbarStyle="outsideOverlay"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:listitem="@layout/list_films" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

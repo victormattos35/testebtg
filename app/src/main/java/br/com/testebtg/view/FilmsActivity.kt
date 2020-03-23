@@ -1,19 +1,22 @@
 package br.com.testebtg.view
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import br.com.testebtg.R
+import br.com.testebtg.model.Favorites
 import br.com.testebtg.model.ListFilms
 import br.com.testebtg.view.adapter.FragmentsAdapter
+import br.com.testebtg.viewmodel.FavoritesViewModel
 import br.com.testebtg.viewmodel.FilmsViewModel
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_list_films.*
 
 class FilmsActivity : AppCompatActivity() {
 
-    private val viewModel = FilmsViewModel()
+    private val viewModelFilms = FilmsViewModel()
+    private val viewModelFavorites = FavoritesViewModel()
     private var listFilms: ListFilms = ListFilms()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,9 +31,23 @@ class FilmsActivity : AppCompatActivity() {
     }
 
     private fun initializeViewModel() {
-        viewModel.requestFilms()
-        viewModel.listFilms.observe(this, Observer { listFilms ->
-            this.listFilms = listFilms
+        viewModelFilms.requestFilms()
+
+        viewModelFilms.listFilms.observe(this, Observer { listFilms ->
+            try {
+                this.listFilms = listFilms
+                viewModelFavorites.getAllFavorites(this)
+            } catch (e: Exception) {
+                Toast.makeText(this, "Não foi possível carregar a lista", Toast.LENGTH_LONG).show()
+                e.printStackTrace()
+            }
+        })
+
+        viewModelFavorites.listFavorites.observe(this, Observer {
+            it.map { favorite -> favorite.id = 0 }
+            listFilms.results.map { film ->
+                film.isFavorite = it.contains(Favorites(0, film.id))
+            }
             initializeViewPager()
             setActionTab()
         })

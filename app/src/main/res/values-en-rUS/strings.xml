@@ -5,4 +5,6 @@
     <string name="test_btg_films">Movies</string>
     <string name="test_btg_gener"><b>Gener:</b></string>
     <string name="test_btg_search">Search</string>
+    <string name="test_btg_description">Description</string>
+    <string name="test_btg_favorite">Favorite</string>
 </resources>
