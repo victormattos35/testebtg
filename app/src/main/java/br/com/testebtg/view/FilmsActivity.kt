@@ -1,6 +1,7 @@
 package br.com.testebtg.view
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -32,12 +33,13 @@ class FilmsActivity : AppCompatActivity() {
 
     private fun initializeViewModel() {
         viewModelFilms.requestFilms()
-
+        pbFFLoading.visibility = View.VISIBLE
         viewModelFilms.listFilms.observe(this, Observer { listFilms ->
             try {
                 this.listFilms = listFilms
                 viewModelFavorites.getAllFavorites(this)
             } catch (e: Exception) {
+                pbFFLoading.visibility = View.GONE
                 Toast.makeText(this, "Não foi possível carregar a lista", Toast.LENGTH_LONG).show()
                 e.printStackTrace()
             }

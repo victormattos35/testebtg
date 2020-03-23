@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -16,6 +17,7 @@ import br.com.testebtg.util.formatDate
 import br.com.testebtg.view.adapter.FilmsAdapter
 import br.com.testebtg.viewmodel.FavoritesViewModel
 import br.com.testebtg.viewmodel.FilmsViewModel
+import kotlinx.android.synthetic.main.activity_list_films.*
 import kotlinx.android.synthetic.main.fragment_films_and_favorites.view.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -27,6 +29,7 @@ class FavoritesFragment(private var listFilms: ListFilms) : Fragment() {
     private val viewModelFavorites = FavoritesViewModel()
     private var listFilmsFilter = ArrayList<Film>()
     private var listFilmsFavorites = ArrayList<Film>()
+    private var pbLFLoading: ProgressBar? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +37,7 @@ class FavoritesFragment(private var listFilms: ListFilms) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_films_and_favorites, null)
+        pbLFLoading = activity!!.findViewById(R.id.pbFFLoading)
         listFilms.results.map { if (it.isFavorite) listFilmsFilter.add(it) }
         listFilmsFilter.let {
             view.rvFFFilms.layoutManager =
@@ -45,14 +49,43 @@ class FavoritesFragment(private var listFilms: ListFilms) : Fragment() {
             listFilmsFavorites = listFilmsFilter
             view.rvFFFilms.adapter = FilmsAdapter(listFilmsFilter, view.context)
         }
-
         setEventFields(view)
-
+        initializeObservable(view)
         return view
     }
 
+    private fun initializeObservable(view: View) {
+        viewModelFilms.listFilms.observe(this, androidx.lifecycle.Observer {
+            try {
+                listFilmsFilter = ArrayList(it.results)
+                viewModelFavorites.getAllFavorites(activity!!.applicationContext)
+            } catch (e: Exception) {
+                pbLFLoading?.visibility = View.GONE
+                view.srlFFRefresh.isRefreshing = false
+                Toast.makeText(
+                    activity!!.applicationContext,
+                    "Não foi possível atualizar a lista",
+                    Toast.LENGTH_LONG
+                ).show()
+                e.printStackTrace()
+            }
+        })
+
+        viewModelFavorites.listFavorites.observe(this, androidx.lifecycle.Observer {
+            listFilmsFavorites.clear()
+            it.map { favorites -> favorites.id = 0 }
+            listFilmsFilter.map { film ->
+                film.isFavorite = it.contains(Favorites(0, film.id))
+                if (film.isFavorite) listFilmsFavorites.add(film)
+            }
+            view.srlFFRefresh.isRefreshing = false
+            pbLFLoading?.visibility = View.GONE
+            view.rvFFFilms.adapter = FilmsAdapter(listFilmsFavorites, view.context)
+        })
+    }
+
     private fun setEventFields(view: View) {
-       view.etFFFilmsSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        view.etFFFilmsSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -81,27 +114,12 @@ class FavoritesFragment(private var listFilms: ListFilms) : Fragment() {
 
         view.srlFFRefresh.setOnRefreshListener {
             viewModelFilms.requestFilms()
-            viewModelFilms.listFilms.observe(this, androidx.lifecycle.Observer {
-                try {
-                    listFilmsFilter = ArrayList(it.results)
-                    viewModelFavorites.getAllFavorites(activity!!.applicationContext)
-                } catch (e: Exception) {
-                    Toast.makeText(activity!!.applicationContext, "Não foi possível atualizar a lista", Toast.LENGTH_LONG).show()
-                    e.printStackTrace()
-                }
-            })
-
-            viewModelFavorites.listFavorites.observe(this, androidx.lifecycle.Observer {
-                listFilmsFavorites.clear()
-                it.map { favorites -> favorites.id = 0 }
-                listFilmsFilter.map { film ->
-                    film.isFavorite = it.contains(Favorites(0, film.id))
-                    if (film.isFavorite) listFilmsFavorites.add(film)
-                }
-                view.srlFFRefresh.isRefreshing = false
-                view.rvFFFilms.adapter = FilmsAdapter(listFilmsFavorites, view.context)
-            })
-
         }
+    }
+
+    override fun onResume() {
+        pbLFLoading?.visibility = View.VISIBLE
+        viewModelFilms.requestFilms()
+        super.onResume()
     }
 }
