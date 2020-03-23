@@ -15,19 +15,27 @@ class DescriptionViewModel : ViewModel() {
 
     private val retrofitClient = RetrofitClient.getRetrofitInstance()
 
-    val listGenres: MutableLiveData<ListGenres> = MutableLiveData()
+    private val listGenres: MutableLiveData<ListGenres> = MutableLiveData()
 
     fun requestGenres(context: Context) {
         val request = retrofitClient.create(Repository::class.java)
         val genresRequest =
-            request.getGenres(api_key = RetrofitClient.api_key, language = returnLocaleString(context))
+            request.getGenres(
+                api_key = RetrofitClient.api_key,
+                language = returnLocaleString(context)
+            )
         genresRequest.enqueue(object : Callback<ListGenres> {
             override fun onResponse(call: Call<ListGenres>, response: Response<ListGenres>) {
                 listGenres.postValue(response.body())
             }
+
             override fun onFailure(call: Call<ListGenres>, t: Throwable) {
                 listGenres.postValue(null)
             }
         })
+    }
+
+    fun getListGenres(): MutableLiveData<ListGenres> {
+        return listGenres
     }
 }

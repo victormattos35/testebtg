@@ -55,7 +55,7 @@ class FilmsFragment(private var listFilms: ListFilms) : Fragment() {
     }
 
     private fun initializeObservable(view: View) {
-        viewModelFilm.listFilms.observe(this, androidx.lifecycle.Observer {
+        viewModelFilm.getListFilms().observe(this, androidx.lifecycle.Observer {
             try {
                 listFilmsRefresh = ArrayList(it.results)
                 viewModelFavorites.getAllFavorites(activity!!.applicationContext)
@@ -71,7 +71,7 @@ class FilmsFragment(private var listFilms: ListFilms) : Fragment() {
             }
         })
 
-        viewModelFavorites.listFavorites.observe(this, androidx.lifecycle.Observer {
+        viewModelFavorites.getListFavorites().observe(this, androidx.lifecycle.Observer {
             it.map { favorites -> favorites.id = 0 }
             view.srlFFRefresh.isRefreshing = false
             listFilmsRefresh.map { film ->

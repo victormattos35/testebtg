@@ -14,7 +14,7 @@ import retrofit2.Response
 class FilmsViewModel : ViewModel() {
     private val retrofitClient = RetrofitClient.getRetrofitInstance()
 
-    val listFilms: MutableLiveData<ListFilms> = MutableLiveData()
+    private val listFilms: MutableLiveData<ListFilms> = MutableLiveData()
 
     fun requestFilms(context: Context) {
         val request = retrofitClient.create(Repository::class.java)
@@ -32,6 +32,10 @@ class FilmsViewModel : ViewModel() {
                 listFilms.postValue(null)
             }
         })
+    }
+
+    fun getListFilms(): MutableLiveData<ListFilms> {
+        return listFilms
     }
 
 }

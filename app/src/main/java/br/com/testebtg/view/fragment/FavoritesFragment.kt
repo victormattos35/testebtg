@@ -56,7 +56,7 @@ class FavoritesFragment(private var listFilms: ListFilms) : Fragment() {
     }
 
     private fun initializeObservable(view: View) {
-        viewModelFilms.listFilms.observe(this, androidx.lifecycle.Observer {
+        viewModelFilms.getListFilms().observe(this, androidx.lifecycle.Observer {
             try {
                 listFilmsFilter = ArrayList(it.results)
                 viewModelFavorites.getAllFavorites(activity!!.applicationContext)
@@ -72,7 +72,7 @@ class FavoritesFragment(private var listFilms: ListFilms) : Fragment() {
             }
         })
 
-        viewModelFavorites.listFavorites.observe(this, androidx.lifecycle.Observer {
+        viewModelFavorites.getListFavorites().observe(this, androidx.lifecycle.Observer {
             listFilmsFavorites.clear()
             it.map { favorites -> favorites.id = 0 }
             listFilmsFilter.map { film ->

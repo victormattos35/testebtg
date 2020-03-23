@@ -34,7 +34,7 @@ class FilmsActivity : AppCompatActivity() {
     private fun initializeViewModel() {
         viewModelFilms.requestFilms(this)
         pbFFLoading.visibility = View.VISIBLE
-        viewModelFilms.listFilms.observe(this, Observer { listFilms ->
+        viewModelFilms.getListFilms().observe(this, Observer { listFilms ->
             try {
                 this.listFilms = listFilms
                 viewModelFavorites.getAllFavorites(this)
@@ -45,7 +45,7 @@ class FilmsActivity : AppCompatActivity() {
             }
         })
 
-        viewModelFavorites.listFavorites.observe(this, Observer {
+        viewModelFavorites.getListFavorites().observe(this, Observer {
             it.map { favorite -> favorite.id = 0 }
             listFilms.results.map { film ->
                 film.isFavorite = it.contains(Favorites(0, film.id))

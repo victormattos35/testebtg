@@ -53,7 +53,7 @@ class DescriptionActivity : AppCompatActivity() {
 
     private fun initializeObservable() {
         viewModelDescription.requestGenres(this)
-        viewModelDescription.listGenres.observe(this, Observer {
+        viewModelDescription.getListGenres().observe(this, Observer {
             try {
                 var listGenres = ""
                 it.genres.filter { genre -> film!!.genre_ids.contains(genre.id) }.also { genres ->
