@@ -52,7 +52,7 @@ class DescriptionActivity : AppCompatActivity() {
     }
 
     private fun initializeObservable() {
-        viewModelDescription.requestGenres()
+        viewModelDescription.requestGenres(this)
         viewModelDescription.listGenres.observe(this, Observer {
             try {
                 var listGenres = ""

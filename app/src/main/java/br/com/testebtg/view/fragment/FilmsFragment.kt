@@ -14,6 +14,7 @@ import br.com.testebtg.model.Favorites
 import br.com.testebtg.model.Film
 import br.com.testebtg.model.ListFilms
 import br.com.testebtg.util.formatDate
+import br.com.testebtg.util.returnLocale
 import br.com.testebtg.view.adapter.FilmsAdapter
 import br.com.testebtg.viewmodel.FavoritesViewModel
 import br.com.testebtg.viewmodel.FilmsViewModel
@@ -63,7 +64,7 @@ class FilmsFragment(private var listFilms: ListFilms) : Fragment() {
                 view.srlFFRefresh.isRefreshing = false
                 Toast.makeText(
                     activity!!.applicationContext,
-                    "Não foi possível atualizar a lista",
+                    context?.getText(R.string.test_btg_not_possible_update_list),
                     Toast.LENGTH_LONG
                 ).show()
                 e.printStackTrace()
@@ -95,13 +96,8 @@ class FilmsFragment(private var listFilms: ListFilms) : Fragment() {
                 var listFilmsSearch = ArrayList<Film>()
                 textSearch.let {
                     for (item in listFilmsRefresh) {
-                        if (item.title.toUpperCase(
-                                Locale(
-                                    "pt",
-                                    "BR"
-                                )
-                            ).contains(textSearch.toString().toUpperCase(Locale("pt", "BR"))) ||
-                            formatDate(item.release_date).contains(textSearch.toString())
+                        if (item.title.toUpperCase(returnLocale(context)).contains(textSearch.toString().toUpperCase(returnLocale(context)))
+                            || formatDate(item.release_date).contains(textSearch.toString())
                         ) {
                             listFilmsSearch.add(item)
                         }
@@ -115,13 +111,13 @@ class FilmsFragment(private var listFilms: ListFilms) : Fragment() {
 
 
         view.srlFFRefresh.setOnRefreshListener {
-            viewModelFilm.requestFilms()
+            viewModelFilm.requestFilms(view.context)
         }
     }
 
     override fun onResume() {
         pbLFLoading?.visibility = View.VISIBLE
-        viewModelFilm.requestFilms()
+        viewModelFilm.requestFilms(view!!.context)
         super.onResume()
     }
 }

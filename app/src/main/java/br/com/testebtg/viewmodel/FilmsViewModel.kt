@@ -3,13 +3,10 @@ package br.com.testebtg.viewmodel
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import br.com.testebtg.database.FavoritesDAO
-import br.com.testebtg.database.config.InstanceDatabase
-import br.com.testebtg.model.Favorites
-import br.com.testebtg.model.Film
 import br.com.testebtg.model.ListFilms
 import br.com.testebtg.network.RetrofitClient
 import br.com.testebtg.repository.Repository
+import br.com.testebtg.util.returnLocaleString
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,10 +16,13 @@ class FilmsViewModel : ViewModel() {
 
     val listFilms: MutableLiveData<ListFilms> = MutableLiveData()
 
-    fun requestFilms() {
+    fun requestFilms(context: Context) {
         val request = retrofitClient.create(Repository::class.java)
         val filmsRequest =
-            request.getPopularFilms(api_key = RetrofitClient.api_key, language = "pt-BR")
+            request.getPopularFilms(
+                api_key = RetrofitClient.api_key,
+                language = returnLocaleString(context)
+            )
         filmsRequest.enqueue(object : Callback<ListFilms> {
             override fun onResponse(call: Call<ListFilms>, response: Response<ListFilms>) {
                 listFilms.postValue(response.body())

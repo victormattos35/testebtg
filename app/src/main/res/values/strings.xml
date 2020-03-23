@@ -6,4 +6,8 @@
     <string name="test_btg_search">Pesquisar</string>
     <string name="test_btg_favorite">Favorito</string>
     <string name="test_btg_description">Descrição</string>
+    <string name="test_btg_not_possible_load_list">"Não foi possível carregar a lista"</string>
+    <string name="test_btg_not_possible_update_list">Não foi possível atualizar a lista</string>
+    <string name="test_btg_language">pt</string>
+    <string name="test_btg_country">BR</string>
 </resources>

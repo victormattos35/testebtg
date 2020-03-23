@@ -32,7 +32,7 @@ class FilmsActivity : AppCompatActivity() {
     }
 
     private fun initializeViewModel() {
-        viewModelFilms.requestFilms()
+        viewModelFilms.requestFilms(this)
         pbFFLoading.visibility = View.VISIBLE
         viewModelFilms.listFilms.observe(this, Observer { listFilms ->
             try {
@@ -40,7 +40,7 @@ class FilmsActivity : AppCompatActivity() {
                 viewModelFavorites.getAllFavorites(this)
             } catch (e: Exception) {
                 pbFFLoading.visibility = View.GONE
-                Toast.makeText(this, "Não foi possível carregar a lista", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, applicationContext.getText(R.string.test_btg_not_possible_load_list), Toast.LENGTH_LONG).show()
                 e.printStackTrace()
             }
         })
